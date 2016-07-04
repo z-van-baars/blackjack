@@ -15,6 +15,7 @@ class Deck(object):
         self.shuffled_deck = []
         self.discard = []
 
+
 class Hand(object):
     def __init__(self, name):
         self.cards = []
@@ -48,15 +49,18 @@ def another_game():
 
 def printouts():
     print('\n' * 50)
-    print("Dealer's total %d // Dealer's Hand" % dealer.hands[0].total)
-    print("_____________________________________")
+    
     if not user.moves_finished:
+        print("Dealer's total %d // Dealer's Hand" % (dealer.hands[0]).cards[0][1])
+        print("_____________________________________")
         print((dealer.hands[0]).cards[0][0] + " | FACE DOWN", end=" | ")
-    elif user.moves_finished:
+    else:
+        print("Dealer's total %d // Dealer's Hand" % dealer.hands[0].total)
+        print("_____________________________________")
         for card in (dealer.hands[0]).cards:
             print(card[0], end=" | ")
     print("\n \n")
-    print("Player's Coins: %d" % user.coins)
+    print("Player's Coins: %d \n" % user.coins)
     hand_number = 0
     for hand in user.hands:
         hand_number += 1
@@ -64,7 +68,7 @@ def printouts():
         print("______________________________________________\n  ")
         for card in hand.cards:
             print(card[0], end=" | ")
-        print("\n ______\n")
+        print("\n______\n")
 
 
 def hit(player_hitting, hand):
@@ -94,6 +98,7 @@ def split(player_splitting, hand):
 
 
 def dealer_choice(hand):
+    printouts()
     dealer_not_staying = True
     while dealer_not_staying and not hand.bust:
 
@@ -119,7 +124,6 @@ def dealer_choice(hand):
 
 
 def player_choice(hand):
-   
     player_not_staying = True
     while player_not_staying and not hand.bust:
         player_action_chosen = False
@@ -154,6 +158,7 @@ def player_choice(hand):
         hand.get_card_total()
         bust_check(user, hand)
         printouts()
+
 
 def bust_check(player_to_be_checked, hand_to_be_checked):
     if hand_to_be_checked.total > 21:
@@ -268,27 +273,36 @@ def cleanup(player_to_be_cleaned):
     player_to_be_cleaned.hands = []
     player_to_be_cleaned.moves_finished = False
 
+def reset_aces():
+    for card in active_deck.discard:
+        if card[1] == 1:
+            active_deck.shuffled_deck.append((card[0], 11))
+        else:
+            active_deck.shuffled_deck.append(card)
+
+def choose_deck_amount():
+    number_of_decks_chosen = False
+    while not number_of_decks_chosen:
+   
+        while True:
+            try:
+                print("How many decks would you like to play with? 1 // 2 // 3 // 4 // 5 // 6")
+                decks = int(input("? "))
+                break
+            except ValueError:
+                print("Invalid deck number, try again")
+                pass
+
+        if decks in range(1, 7):
+            print("Playing with %d decks!" % decks)
+            number_of_decks_chosen = True
+        else:
+            print("Invalid deck number, try again")
+    return decks
 
 
 playing = True
-number_of_decks_chosen = False
-while not number_of_decks_chosen:
-   
-    while True:
-        try:
-            print("How many decks would you like to play with? 1 // 2 // 3 // 4 // 5 // 6")
-            decks = int(input("? "))
-            break
-        except ValueError:
-            print("Invalid deck number, try again")
-            pass
-
-    if decks in range(1, 7):
-        print("Playing with %d decks!" % decks)
-        number_of_decks_chosen = True
-    else:
-        print("Invalid deck number, try again")
-
+decks = choose_deck_amount()
 
 card_tuples = []
 suits = ["Spades", "Hearts", "Diamonds", "Clubs"]
@@ -304,7 +318,6 @@ user.coins = 100
 dealer = Player("Dealer")
 active_deck = Deck()
 active_deck.shuffled_deck = card_tuples
-
 
 while playing:
     random.shuffle(active_deck.shuffled_deck)
@@ -338,11 +351,8 @@ while playing:
     for card in active_deck.shuffled_deck:
         active_deck.discard.append(card)
         active_deck.shuffled_deck.remove(card)
-    active_deck.shuffled_deck = []
     for card in active_deck.discard:
-        if card[1] == 1:
-            active_deck.shuffled_deck.append((card[0], 11))
-        else:
-            active_deck.shuffled_deck.append(card)
+        active_deck.shuffled_deck.append(card)
+        active_deck.discard.remove(card)
 
-playing = another_game()
+    playing = another_game()
