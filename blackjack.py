@@ -191,7 +191,6 @@ def place_bet(hand):
             except ValueError:
                 print("Invalid bet amount, try again")
                 pass
-
         if x in range(1, (user.coins + 1)):
             hand.bet = x
             print("Player bet %d coins!" % hand.bet)
@@ -251,7 +250,6 @@ def win_check():
                 else:
                     print("Dealer busts!")
                     player_wins(hand)
-
         elif (dealer.hands[0]).total < hand.total:
             if hand.bust and (dealer.hands[0]).bust:
                 print("Push! Both players tie.")
@@ -261,7 +259,6 @@ def win_check():
                 else:
                     print("Player busts!")
                     dealer_wins(hand)
-
         else:
             print("Push! Both players tie.")
 
@@ -283,7 +280,6 @@ def reset_aces():
 def choose_deck_amount():
     number_of_decks_chosen = False
     while not number_of_decks_chosen:
-   
         while True:
             try:
                 print("How many decks would you like to play with? 1 // 2 // 3 // 4 // 5 // 6")
@@ -292,7 +288,6 @@ def choose_deck_amount():
             except ValueError:
                 print("Invalid deck number, try again")
                 pass
-
         if decks in range(1, 7):
             print("Playing with %d decks!" % decks)
             number_of_decks_chosen = True
@@ -300,18 +295,20 @@ def choose_deck_amount():
             print("Invalid deck number, try again")
     return decks
 
+def build_game_deck(decks):
+    card_tuples = []
+    suits = ["Spades", "Hearts", "Diamonds", "Clubs"]
+    card_values = [("2 of ", 2), ("3 of ", 3), ("4 of ", 4), ("5 of ", 5), ("6 of ", 6), ("7 of ", 7), ("8 of ", 8), ("9 of ", 9), ("10 of ", 10), ("Jack of ", 10), ("Queen of ", 10), ("King of ", 10), ("Ace of ", 11)]
+    for deck in range(decks):
+        for suit in suits:
+            for value in card_values:
+                card_tuples.append((value[0] + suit, value[1]))
+    return card_tuples
+
 
 playing = True
-decks = choose_deck_amount()
-
-card_tuples = []
-suits = ["Spades", "Hearts", "Diamonds", "Clubs"]
-card_values = [("2 of ", 2), ("3 of ", 3), ("4 of ", 4), ("5 of ", 5), ("6 of ", 6), ("7 of ", 7), ("8 of ", 8), ("9 of ", 9), ("10 of ", 10), ("Jack of ", 10), ("Queen of ", 10), ("King of ", 10), ("Ace of ", 11)]
-for deck in range(decks):
-    for suit in suits:
-        for value in card_values:
-            card_tuples.append((value[0] + suit, value[1]))
-
+number_of_decks = choose_deck_amount()
+card_tuples = build_game_deck(number_of_decks)
 user_name = "User"
 user = Player(user_name)
 user.coins = 100
